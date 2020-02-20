@@ -1,0 +1,135 @@
+1) Les modifications personnelles ajoutées a l'architecture proposee : 
+
+Le joueur : Lorsqu'il a moins de la moitié de la vie, le blocker apparait comme triste. Si il a plus de la moitié de sa vie, il apparait comme joyeux.
+
+Classe Spike : on considère qu'on ne se prend des degats que lorsqu'on tombe sur les spikes en etant au dessus de ceux-ci.
+On se prend un degat physical de 10 ainsi qu'un degat AIR de 4 pour simuler une repulsion du spike (et nous laisser le temps de s'echapper).  
+
+Classe Fireball : Conceptuellement, peu importe le lanceur d'une boule de feu (autre que son propriétaire), une flamme reste une flamme. 
+Il n'y a pas de raisons pour qu'une flamme du player soit efficace contre un Slime,mais qu'une flamme de mouche ne lui fasse aucun effet. 
+La seule exception à cette règle étant les dragons, naturellements insensibles aux flammes.
+Ainsi, un Slime peut prendre des dégats de feu qui ne proviennent pas nécéssairement du joueur, mais aussi du dragon par exemple.
+
+Nous avons décidé de donner un peu plus de dynamisme aux flames en les faisant tourner davantage, car elles semblaient un peu trop lentes. On a du coup multiplié leur vitesse angulaire de rotation.
+
+
+- La classe Key : On peut considérer que la clé est un signal, dans le sens ou elle permet l'ouverture de portes par exemple, mais aussi que la clé peut avoir un signal
+pour apparaitre : il se pourrait qu'une clé n'apparaisse qu'une fois certains monstres vaincus. C'est pour cela qu'on définit deux constructeurs pour la classe Key : un
+constructeur qui ne prend pas en parametre un signal pour les clés ordinaires, et un constructeur pour les clés qui n'apparaissent qu'une fois un certain signal émis 
+(comme la mort de monstres par exemple).
+
+- La classe Lever : On considère les leviers exactement comme des clés dans le sens ou on leur définit deux constructeurs : 
+un qui prend en compte un signal et un qui n'en prend pas un en compte, pour les memes raisons que pour la clé.
+
+
+
+2) Les extensions ajoutées : 
+
+- Les classes Slime et Fly : 
+Les classes Slime et Fly que nous avons ajoutées présentent les memes caractéristiques que celles présentées dans la partie 6) du mini projet. 
+On donne deux constructeurs à ces classes et on les implémente à Signal, pour la meme raison qu'on le fait aux dragons :
+Un ennemi peut se suffire à lui meme, dans le sens ou le tuer pourrait ne rien modifier dans le niveau, mais la mort d'un ennemi pourrait faire apparaitre une clé (d'ou le "implements Signal")
+mais, on pourrait aussi tendre des pièges à l'utilisateur : une clé qui serait ramassée pourrait etre un piège qui libèrerait une dizaine de Slime ou de Fly. C'est pour cela qu'on définit 
+un second constructeur prenant en paramètre un signal, qui , en fonction de son état (actif ou non), permet l'interraction et le dessin de ceux deux types d'ennemis.
+Le mode de déplacement de ces deux types d'ennemis est similaire à celui d'un mover : ils ont un mouvement répétitif entre une position de départ et d'arrivée en boucle.
+La différence majeure entre ces deux types d'ennemis, est que le Slime repousse principalement le joueur avec un dégat AIR, alors que la mouche est plutot supposée lui tirer des boules de feu depuis une certaine hauteur.
+
+
+
+
+
+
+- La classe BreakableBlock : Une sous classe de Block qui est destructible avec des boules de feu.
+
+
+- La classe Dragon : Au lieu de remplir notre stage de Slime et de Fly, nous voulions un ennemi plus puissant en tant que boss. 
+Nous avons préféré construire des dragons qui présentaient ces caractéristiques : invulnérables aux flammes du joueur, crachant des flammes rapides.
+On a profité de l'occasion pour leur donner des apparences uniques, provenant de vrais dragons de la culture populaire : comme Dracaufeu, ou encore le Dragon Blanc Aux Yeux Bleux.
+(nous ne sommes pas propriétaires de ces concepts, ni des images en question, tous les liens vers les images utilisées dans le cadre du projet importée depuis internet sont en bas de page).
+
+Pour cela, conceptuellement,nous avons considéré qu'un dragon de feu était naturellement dans son élément, et que les flammes ne devraient pas l'affecter.
+Pour les flammes crachées : lorsque le joueur apparait à une certaine portée du dragon, celui ci peut tirer des boules de feu dans la direction du joueur qui ont une vitesse importante.
+Un dégat PHYSICAL ou AIR ne devrait pas etre efficace contre un puissant dragon, si ce dernier est déjà insensible aux flammes.
+Du coup, pour tuer un dragon, il a fallu rajouter un type de dégat, causé par le joueur et qui est le seul dommage efficace contre les dragons : le Hadoken.
+
+
+
+- La classe Hadoken : 
+Le hadoken est le seul type de dégat efficace face aux dragons et au boss final. (elle n'est efficace que sur des dragons).
+Pour lancer un Hadoken, il faut appuyer sur la touche "A", et pointer à la souris l'endroit ou on veut tirer la vague d'energie, à l'inverse de la boule de feu, avec le Hadoken
+l'utilisateur est totalement libre de la direction de son Hadoken, sans avoir à se préoccuper de la gravité du stage. 
+Tout comme dans le jeu de combat dont est issu le véritable Hadoken, lorsqu'il entre en collision avec un mur ou un obstacle, le Hadoken disparait.
+En fonction de là ou le Hadoken est tiré, le Sprite peut etre dirigé de deux directions différentes : vers la gauche ou la droite. (C'est possible en faisant une rotation sur le Sprite original du Hadoken).
+
+
+- La classe Blockyspike : Une sous classe de Spike: Il s'agit d'un spike qui se comporte en tant que tel, cependant lorsqu'un signal est activé, 
+il prend le comportement d'un bloc (au niveau de l'affichage et de l'interraction). Au lieu de définir un second constructeur comme pour les leviers et les clés, on a 
+considéré qu'un Blockyspike avait un comportement assez unique en son genre : ni un block, ni un Spike mais un hybride. On peut difficilement dire qu'un Spike est un Blockyspike, 
+mais on peut considérer qu'un Blockyspike "est une" sorte de Spike, d'ou le lien d'héritage entre Spike et Blockyspike au lieu d'un second constructeur prenant en parametre un signal.
+
+
+
+
+- La classe DoorSelection : Cette sous classe de Exit nous permet d'instancier des liens vers les niveaux construits lors du menu de selection des stages. Ce choix est justifié par le fait que DoorSelection interragit avec la souris.
+
+
+- La classe Hiddenjumper : La raison pour laquelle on a préféré créer une sous classe de Jumper, à l'instar des Blockyspike, au lieu de procéder avec un second constructeur comme pour les clés et les leviers, 
+c'est parce qu'on estimait aussi qu'un Hiddenjumper etait un Jumper, mais qu'un Jumper n'était pas forcément un jumper caché, d'ou le lien d'héritage. 
+  
+
+
+- La classe Background : Cette sous classe de Actor avec la plus faible des priorites(pour s'afficher en premier) dessine un sprite qui servira d'arriere plan au stage, pour un meilleur effet visuel.
+
+- Le stage du combat final : Tout comme dans la plupart des jeux de plateforme, nous avons aussi pensé à rajouter un combat contre un boss après deux niveaux. 
+Qui de mieux que l'icone meme du jeu de plateforme pour combattre notre personnage? Pour finir le jeu, il faut vaincre Mario. 
+Puisque le Mario qu'on voulait instancier avait exactement les memes caractéristiques qu'un dragon (non vulnérable au feu, et pouvant lancer des boules de feu), 
+nous avons pensé qu'il était superflu de définir une classe Mario héritant de dragon mais n'apportant rien de nouveau à ce boss,
+ et avons jugé préférable d'instancier Mario comme un dragon, mais de quand meme lui donner un sprite de Mario.
+
+
+
+- L'ecran de fin : Il s'agit d'un écran qui apparait pour vous remercier d'avoir joué à notre jeu, avec une blague peu fameuse pour conclure notre jeu.
+Il s'agit d'un niveau, qui ne contient qu'un fond d'écran, celui du message destiné au joueur ayant fini le niveau 3.
+
+Les liens des images prises depuis internet pour le projet, qui ne nous appartiennent pas :
+
+Le Hadoken :
+https://s-media-cache-ak0.pinimg.com/736x/38/da/32/38da321962fd1d020cdc2fd0190a28bf.jpg
+(retouche avec photoshop pour mettre la transparence de l'image)
+
+Le dragon vert : http://strategywiki.org/wiki/Wonder_Boy_in_Monster_Land/Round_12
+
+Le dragon Blanc aux Yeux bleux :http://vignette4.wikia.nocookie.net/p__/images/2/25/Yu_gi_oh_blue_eyes_white_dragon_render_by_stormfrontdp-d5bx79a.png/revision/latest?cb=20140822164313&path-prefix=protagonist
+(retouche avec photoshop pour mettre la transparence de l'image)
+
+Le dracaufeu :
+ http://s1015.photobucket.com/user/Eelan92/media/Spr_4h_006.png.html
+
+le Mario Bros : 
+http://vignette3.wikia.nocookie.net/fantendo/images/5/58/8bitsprite-1-.png/revision/latest?cb=20151029181053
+(retouche avec photoshop pour mettre la transparence de l'image)
+
+Le royaume champignon : 
+
+https://images7.alphacoders.com/333/333217.jpg
+
+Le fond d'ecran Night :
+
+http://aws-cf.caradisiac.com/prod/photos/8/6/3/162863/5454503/big-54545039f9.png?v=1
+
+Le fond d'ecran du premier niveau : 
+http://opengameart.org/content/bevouliin-free-game-background-for-game-developers
+
+
+La barre de vie : 
+https://as3gametuts.files.wordpress.com/2012/02/picture-18.png?w=640
+(retouche avec photoshop pour mettre la transparence de l'image et retirer le contour noir)
+
+Le fond d'ecran pour le menu/selecteur de niveaux : 
+http://www.chupamobile.com/ui-graphic-assets/6-vector-game-backgrounds-8003
+
+
+
+
+
+
